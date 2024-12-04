@@ -1,0 +1,17 @@
+{
+  "name": "mongodb_assignment_5_project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node runAllQueries.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "mongodb": "^6.10.0",
+    "redis": "^4.7.0"
+  }
+}

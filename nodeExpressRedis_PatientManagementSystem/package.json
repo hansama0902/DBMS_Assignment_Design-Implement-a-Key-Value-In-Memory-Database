@@ -1,0 +1,33 @@
+{
+  "name": "nodeexpresssqliteejs-patientmanagementsystem",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./node_modules/nodemon/bin/nodemon.js ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "http-errors": "~1.6.3",
+    "mongodb": "^6.10.0",
+    "morgan": "~1.9.1",
+    "pug": "^3.0.3",
+    "redis": "^4.7.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.11.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3"
+  },
+  "description": "",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC"
+}

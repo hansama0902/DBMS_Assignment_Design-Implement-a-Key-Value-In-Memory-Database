@@ -1,0 +1,74 @@
+[
+  {
+    "_id": "000001",
+    "doctor_id": "000001",
+    "patient_id": "000001",
+    "date_issued": "2024-11-03",
+    "dosage_instructions": "Take 1 pill every morning with food"
+  },
+  {
+    "_id": "000002",
+    "doctor_id": "000002",
+    "patient_id": "000002",
+    "date_issued": "2024-11-05",
+    "dosage_instructions": "Apply ointment twice a day for 7 days"
+  },
+  {
+    "_id": "000003",
+    "doctor_id": "000003",
+    "patient_id": "000003",
+    "date_issued": "2024-11-07",
+    "dosage_instructions": "Take 2 tablets before bedtime"
+  },
+  {
+    "_id": "000004",
+    "doctor_id": "000004",
+    "patient_id": "000004",
+    "date_issued": "2024-11-09",
+    "dosage_instructions": "Take 5 ml syrup three times a day"
+  },
+  {
+    "_id": "000005",
+    "doctor_id": "000005",
+    "patient_id": "000005",
+    "date_issued": "2024-11-11",
+    "dosage_instructions": "Take 1 capsule every 8 hours after meals"
+  },
+  {
+    "_id": "000006",
+    "doctor_id": "000006",
+    "patient_id": "000006",
+    "date_issued": "2024-11-13",
+    "dosage_instructions": "Use 2 drops in each eye twice daily"
+  },
+  {
+    "_id": "000007",
+    "doctor_id": "000007",
+    "patient_id": "000007",
+    "date_issued": "2024-11-15",
+    "dosage_instructions": "Take 1 tablet every 6 hours as needed for pain"
+  },
+  {
+    "_id": "000008",
+    "doctor_id": "000008",
+    "patient_id": "000008",
+    "date_issued": "2024-11-17",
+    "dosage_instructions": "Inhale 2 puffs every 4 hours as needed"
+  },
+  {
+    "_id": "000009",
+    "doctor_id": "000009",
+    "patient_id": "000009",
+    "date_issued": "2024-11-19",
+    "dosage_instructions": "Take 1 teaspoonful twice daily"
+  },
+  {
+    "_id": "000010",
+    "doctor_id": "000010",
+    "patient_id": "000010",
+    "date_issued": "2024-11-21",
+    "dosage_instructions": "Take 1 injection every 12 hours for 3 days"
+  }
+]
+
+  

@@ -1,0 +1,114 @@
+[
+  {
+    "_id": "000001",
+    "patient_id": "000001",
+    "medication_issuance_frequency": "daily",
+    "medication_issuance_time": "08:00 AM",
+    "medicine": {
+      "medicine_id": "001",
+      "medicine_name": "Aspirin",
+      "dosage_frequency": "once a day"
+    }
+  },
+  {
+    "_id": "000002",
+    "patient_id": "000002",
+    "medication_issuance_frequency": "weekly",
+    "medication_issuance_time": "09:00 AM",
+    "medicine": {
+      "medicine_id": "002",
+      "medicine_name": "Metformin",
+      "dosage_frequency": "twice a day"
+    }
+  },
+  {
+    "_id": "000003",
+    "patient_id": "000003",
+    "medication_issuance_frequency": "daily",
+    "medication_issuance_time": "07:30 AM",
+    "medicine": {
+      "medicine_id": "003",
+      "medicine_name": "Lisinopril",
+      "dosage_frequency": "once a day"
+    }
+  },
+  {
+    "_id": "000004",
+    "patient_id": "000004",
+    "medication_issuance_frequency": "monthly",
+    "medication_issuance_time": "10:00 AM",
+    "medicine": {
+      "medicine_id": "004",
+      "medicine_name": "Atorvastatin",
+      "dosage_frequency": "once a day"
+    }
+  },
+  {
+    "_id": "000005",
+    "patient_id": "000005",
+    "medication_issuance_frequency": "daily",
+    "medication_issuance_time": "06:00 PM",
+    "medicine": {
+      "medicine_id": "005",
+      "medicine_name": "Ibuprofen",
+      "dosage_frequency": "twice a day"
+    }
+  },
+  {
+    "_id": "000006",
+    "patient_id": "000006",
+    "medication_issuance_frequency": "weekly",
+    "medication_issuance_time": "05:00 PM",
+    "medicine": {
+      "medicine_id": "006",
+      "medicine_name": "Omeprazole",
+      "dosage_frequency": "once every two days"
+    }
+  },
+  {
+    "_id": "000007",
+    "patient_id": "000007",
+    "medication_issuance_frequency": "daily",
+    "medication_issuance_time": "08:30 AM",
+    "medicine": {
+      "medicine_id": "007",
+      "medicine_name": "Levothyroxine",
+      "dosage_frequency": "once a day"
+    }
+  },
+  {
+    "_id": "000008",
+    "patient_id": "000008",
+    "medication_issuance_frequency": "monthly",
+    "medication_issuance_time": "11:00 AM",
+    "medicine": {
+      "medicine_id": "008",
+      "medicine_name": "Losartan",
+      "dosage_frequency": "once a day"
+    }
+  },
+  {
+    "_id": "000009",
+    "patient_id": "000009",
+    "medication_issuance_frequency": "daily",
+    "medication_issuance_time": "07:00 AM",
+    "medicine": {
+      "medicine_id": "009",
+      "medicine_name": "Amoxicillin",
+      "dosage_frequency": "three times a day"
+    }
+  },
+  {
+    "_id": "000010",
+    "patient_id": "000010",
+    "medication_issuance_frequency": "weekly",
+    "medication_issuance_time": "12:00 PM",
+    "medicine": {
+      "medicine_id": "010",
+      "medicine_name": "Albuterol",
+      "dosage_frequency": "as needed"
+    }
+  }
+]
+
+  

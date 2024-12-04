@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "000001",
+    "doctor_name": "Dr. Jane Smith",
+    "license_number": "D123456",
+    "phone": "9876543210"
+  },
+  {
+    "_id": "000002",
+    "doctor_name": "Dr. John Miller",
+    "license_number": "D654321",
+    "phone": "8765432109"
+  },
+  {
+    "_id": "000003",
+    "doctor_name": "Dr. Emily White",
+    "license_number": "D234567",
+    "phone": "7654321098"
+  },
+  {
+    "_id": "000004",
+    "doctor_name": "Dr. Mark Lee",
+    "license_number": "D345678",
+    "phone": "6543210987"
+  },
+  {
+    "_id": "000005",
+    "doctor_name": "Dr. Anna Garcia",
+    "license_number": "D456789",
+    "phone": "5432109876"
+  },
+  {
+    "_id": "000006",
+    "doctor_name": "Dr. James Wilson",
+    "license_number": "D567890",
+    "phone": "4321098765"
+  },
+  {
+    "_id": "000007",
+    "doctor_name": "Dr. Olivia Martin",
+    "license_number": "D678901",
+    "phone": "3210987654"
+  },
+  {
+    "_id": "000008",
+    "doctor_name": "Dr. Samuel Taylor",
+    "license_number": "D789012",
+    "phone": "2109876543"
+  },
+  {
+    "_id": "000009",
+    "doctor_name": "Dr. Grace Thompson",
+    "license_number": "D890123",
+    "phone": "1098765432"
+  },
+  {
+    "_id": "000010",
+    "doctor_name": "Dr. Henry Anderson",
+    "license_number": "D901234",
+    "phone": "0987654321"
+  }
+]

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Disease History</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Add Disease History</h2>
+        <form action="/updateDiseaseHistory" method="post" class="p-4 border rounded bg-light">
+            <!-- Patient ID -->
+            <div class="form-group">
+                <label for="patient_id">Patient ID</label>
+                <input type="text" class="form-control" id="patient_id" name="patient_id" value="<%= historyObj.patient_id %>" placeholder="Enter Patient ID" readonly>
+            </div>
+
+            <!-- History ID -->
+            <div class="form-group">
+                <label for="history_id">History ID</label>
+                <input type="text" class="form-control" id="history_id" name="history_id" value="<%= historyObj._id%>" placeholder="Enter History ID" readonly >
+            </div>
+
+            <!-- Disease Name -->
+            <div class="form-group">
+                <label for="diseases_name">Disease Name</label>
+                <input type="text" class="form-control" id="diseases_name" name="diseases_name" value="<%= historyObj.diseases_name %>" placeholder="Enter Disease Name" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Add History</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

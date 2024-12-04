@@ -1,0 +1,154 @@
+[
+  {
+    "_id": "000001",
+    "test_type": "Blood Test",
+    "test_date": "2024-11-12",
+    "lab": {
+      "lab_id": "001",
+      "lab_name": "City Lab",
+      "zipcode": "12345"
+    },
+    "lab_report": {
+      "report_id": "001",
+      "illness_name": "High Cholesterol",
+      "memo": "Needs diet control"
+    }
+  },
+  {
+    "_id": "000002",
+    "test_type": "X-Ray",
+    "test_date": "2024-11-10",
+    "lab": {
+      "lab_id": "002",
+      "lab_name": "Downtown Imaging",
+      "zipcode": "54321"
+    },
+    "lab_report": {
+      "report_id": "002",
+      "illness_name": "Fractured Rib",
+      "memo": "Requires rest for 4 weeks"
+    }
+  },
+  {
+    "_id": "000003",
+    "test_type": "MRI",
+    "test_date": "2024-11-08",
+    "lab": {
+      "lab_id": "003",
+      "lab_name": "Advanced Diagnostics",
+      "zipcode": "67890"
+    },
+    "lab_report": {
+      "report_id": "003",
+      "illness_name": "Spinal Disc Herniation",
+      "memo": "Physiotherapy recommended"
+    }
+  },
+  {
+    "_id": "000004",
+    "test_type": "Urine Test",
+    "test_date": "2024-11-07",
+    "lab": {
+      "lab_id": "004",
+      "lab_name": "HealthCheck Lab",
+      "zipcode": "11223"
+    },
+    "lab_report": {
+      "report_id": "004",
+      "illness_name": "UTI",
+      "memo": "Antibiotics prescribed"
+    }
+  },
+  {
+    "_id": "000005",
+    "test_type": "CT Scan",
+    "test_date": "2024-11-06",
+    "lab": {
+      "lab_id": "005",
+      "lab_name": "Metro Scans",
+      "zipcode": "33445"
+    },
+    "lab_report": {
+      "report_id": "005",
+      "illness_name": "Kidney Stones",
+      "memo": "Consult urologist"
+    }
+  },
+  {
+    "_id": "000006",
+    "test_type": "Blood Pressure Test",
+    "test_date": "2024-11-05",
+    "lab": {
+      "lab_id": "006",
+      "lab_name": "Community Health Center",
+      "zipcode": "99887"
+    },
+    "lab_report": {
+      "report_id": "006",
+      "illness_name": "Hypertension",
+      "memo": "Monitor daily and reduce salt intake"
+    }
+  },
+  {
+    "_id": "000007",
+    "test_type": "Eye Examination",
+    "test_date": "2024-11-04",
+    "lab": {
+      "lab_id": "007",
+      "lab_name": "Vision Care Clinic",
+      "zipcode": "55678"
+    },
+    "lab_report": {
+      "report_id": "007",
+      "illness_name": "Myopia",
+      "memo": "Prescription glasses provided"
+    }
+  },
+  {
+    "_id": "000008",
+    "test_type": "EKG",
+    "test_date": "2024-11-03",
+    "lab": {
+      "lab_id": "008",
+      "lab_name": "Cardio Center",
+      "zipcode": "44567"
+    },
+    "lab_report": {
+      "report_id": "008",
+      "illness_name": "Irregular Heartbeat",
+      "memo": "Follow up with cardiologist"
+    }
+  },
+  {
+    "_id": "000009",
+    "test_type": "Dental X-Ray",
+    "test_date": "2024-11-02",
+    "lab": {
+      "lab_id": "009",
+      "lab_name": "Smile Dental Lab",
+      "zipcode": "22334"
+    },
+    "lab_report": {
+      "report_id": "009",
+      "illness_name": "Cavity",
+      "memo": "Filling required"
+    }
+  },
+  {
+    "_id": "000010",
+    "test_type": "Hearing Test",
+    "test_date": "2024-11-01",
+    "lab": {
+      "lab_id": "010",
+      "lab_name": "Hearing Solutions",
+      "zipcode": "66778"
+    },
+    "lab_report": {
+      "report_id": "010",
+      "illness_name": "Hearing Loss",
+      "memo": "Hearing aid recommended"
+    }
+  }
+]
+
+  

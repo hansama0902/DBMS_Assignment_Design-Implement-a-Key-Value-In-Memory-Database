@@ -1,0 +1,64 @@
+[
+  {
+    "_id": "000001",
+    "last_sync": "2024-11-11",
+    "symptom": "Cough and Fever",
+    "immuno_compromised": true
+  },
+  {
+    "_id": "000002",
+    "last_sync": "2024-11-12",
+    "symptom": "Headache and Fatigue",
+    "immuno_compromised": false
+  },
+  {
+    "_id": "000003",
+    "last_sync": "2024-11-13",
+    "symptom": "Sore Throat",
+    "immuno_compromised": false
+  },
+  {
+    "_id": "000004",
+    "last_sync": "2024-11-14",
+    "symptom": "Shortness of Breath",
+    "immuno_compromised": true
+  },
+  {
+    "_id": "000005",
+    "last_sync": "2024-11-15",
+    "symptom": "Nausea and Vomiting",
+    "immuno_compromised": false
+  },
+  {
+    "_id": "000006",
+    "last_sync": "2024-11-16",
+    "symptom": "Chest Pain",
+    "immuno_compromised": true
+  },
+  {
+    "_id": "000007",
+    "last_sync": "2024-11-17",
+    "symptom": "Dizziness",
+    "immuno_compromised": false
+  },
+  {
+    "_id": "000008",
+    "last_sync": "2024-11-18",
+    "symptom": "Body Ache and Chills",
+    "immuno_compromised": false
+  },
+  {
+    "_id": "000009",
+    "last_sync": "2024-11-19",
+    "symptom": "Loss of Taste and Smell",
+    "immuno_compromised": true
+  },
+  {
+    "_id": "000010",
+    "last_sync": "2024-11-20",
+    "symptom": "Fever and Fatigue",
+    "immuno_compromised": false
+  }
+]
+
+  
