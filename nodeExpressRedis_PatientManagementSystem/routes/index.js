@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const { MongoClient } = require("mongodb");
@@ -19,18 +18,18 @@ router.post("/add", async (req, res) => {
     const collection = db.collection("patients");
     const patient = req.body;
 
-    // 检查是否提供了patient_id
+    // Check patient_id
     if (!patient.patient_id) {
       return res.status(400).send("Error: Patient ID is required");
     }
 
-    // 检查MongoDB中是否已经存在相同的patient_id
+    // Check if patient_id already exists in MongoDB
     const existingPatient = await collection.findOne({ _id: patient.patient_id });
     if (existingPatient) {
       return res.status(400).send("Error: Patient ID already exists");
     }
 
-    // 插入患者信息到MongoDB
+    // Insert patient information into MongoDB
     await collection.insertOne({
       _id: patient.patient_id,
       first_name: patient.first_name,
@@ -42,15 +41,15 @@ router.post("/add", async (req, res) => {
       disease_history: patient.disease_history || [],
     });
 
-    // 更新 Redis 缓存中的患者信息
+    // Renew patient list cache
     const patientWithId = {
       _id: patient.patient_id,
       ...patient
     };
-    // set patient in redis
+    // Set patient in Redis
     await redisClient.set(`patient:${patient.patient_id}`, JSON.stringify(patientWithId), { EX: 300 });
 
-    // 删除患者列表缓存，确保前端下次获取的是最新数据
+    // Delete patient list cache to refresh it
     await redisClient.del('patients::');
     res.redirect('/');
   } catch (err) {
@@ -59,7 +58,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// 获取患者列表
+// Get patient list
 router.get("/", async (req, res) => {
   try {
     const db = client.db(dbName);
@@ -75,118 +74,51 @@ router.get("/", async (req, res) => {
 
     const cacheKey = `patients:${req.query.id || ''}:${req.query.number || ''}`;
     
-    // 检查Redis缓存
+    // Check if patient list is cached
     const cachedPatients = await redisClient.get(cacheKey);
     if (cachedPatients) {
       console.log("Using cached data");
       return res.render('patients', { res: JSON.parse(cachedPatients) });
     }
 
-    // 如果缓存不可用，从MongoDB获取数据
+    // If not cached, get from MongoDB
     const patients = await collection.find(query).toArray();
 
-    // 将数据缓存到Redis
-    await redisClient.set(cacheKey, JSON.stringify(patients), { EX: 300 }); // 缓存300秒
+    // Cache the patient list
+    await redisClient.set(cacheKey, JSON.stringify(patients), { EX: 300 }); // Cache for 5 minutes
     console.log("Using data from MongoDB and setting cache");
     res.render('patients', { res: patients });
   } catch (err) {
-    console.error("获取患者信息出错：", err);
-    res.status(500).send("数据库错误");
+    console.error("error in get /patients", err);
+    res.status(500).send("DB error");
   }
 });
 
-// 删除患者信息
+// Delete patient
 router.get("/delete", async (req, res) => {
   try {
     const db = client.db(dbName);
     const patientCollection = db.collection("patients");
     const patientId = req.query.id;
 
-    // 从MongoDB中删除患者信息
+    // Delete patient from MongoDB
     await patientCollection.deleteOne({ _id: patientId });
 
-    // 从Redis缓存中删除患者信息
+    // Delete patient from Redis
     await redisClient.del(`patient:${patientId}`);
 
-    // 确保从Redis中删除患者列表缓存
+    // Delete patient list cache
     await redisClient.del('patients::');
     await redisClient.del('diseaseHistory::');
 
-    // 返回删除状态
+    // Return status
     res.json({ delstatus: 1 });
   } catch (err) {
-    console.error("删除患者信息出错：", err);
-    res.status(500).send("数据库错误");
+    console.error("error in delete", err);
+    res.status(500).send("DB error");
   }
 });
 
-// // Edit Patient Page
-// router.get("/editPage", async (req, res) => {
-//   try {
-//     const db = client.db(dbName);
-//     const collection = db.collection("patients");
-//     const patientId = req.query.patient_id;
-
-//     // 确保patientId有效
-//     if (!patientId) {
-//       return res.status(400).send("Patient ID is required");
-//     }
-
-//     // 检查Redis缓存
-//     const cachedPatient = await redisClient.get(`patient:${patientId}`);
-//     if (cachedPatient) {
-//       const patient = JSON.parse(cachedPatient);
-//       // if (!patient || !patient._id) {
-//         if (!patient || !patient._id) {
-//         return res.status(400).send("Invalid patient data in cache");
-//       }
-//       return res.render("editPage", { patientObj: patient });
-//     }
-
-//     // 从MongoDB获取患者信息
-//     const patient = await collection.findOne({ _id: patientId });
-//     if (patient) {
-//       // 将患者信息缓存到Redis
-//       await redisClient.set(`patient:${patientId}`, JSON.stringify(patient), { EX: 300 }); // 设置TTL为300秒
-//       return res.render("editPage", { patientObj: patient });
-//     } else {
-//       return res.status(404).send("Patient not found");
-//     }
-//   } catch (err) {
-//     console.error("Error retrieving patient for edit:", err);
-//     return res.status(500).send("Database error occurred");
-//   }
-// });
-
-// // 更新患者信息
-// router.post("/updatePatient", async (req, res) => {
-//   try {
-//     const db = client.db(dbName);
-//     const collection = db.collection("patients");
-//     const updatedPatient = req.body;
-
-//     // 确保patient_id有效
-//     if (!updatedPatient.patient_id) {
-//       return res.status(400).send("Patient ID is required");
-//     }
-
-//     // 更新MongoDB中的患者信息
-//     await collection.updateOne(
-//       { _id: updatedPatient.patient_id },
-//       { $set: updatedPatient }
-//     );
-
-//     // 更新Redis缓存中的患者信息
-//     await redisClient.set(`patient:${updatedPatient.patient_id}`, JSON.stringify(updatedPatient), { EX: 300 });
-
-//     // 删除Redis中的患者列表缓存，以便下次重新获取最新数据
-//     await redisClient.del('patients::');
-//     res.redirect('/');
-//   } catch (err) {
-//     console.error("更新患者信息出错：", err);
-//     return res.status(500).send("数据库错误");
-//   }
-// });  
 // Edit Patient Page
 router.get("/editPage", async (req, res) => {
   try {
@@ -194,28 +126,27 @@ router.get("/editPage", async (req, res) => {
     const collection = db.collection("patients");
     const patientId = req.query.patient_id;
 
-    // 确保patientId有效
+    // Make sure patientId is provided
     if (!patientId) {
       return res.status(400).send("Patient ID is required");
     }
 
-    // 检查Redis缓存
+    // Check if patient exists in cache
     const cachedPatient = await redisClient.get(`patient:${patientId}`);
     if (cachedPatient) {
       const patient = JSON.parse(cachedPatient);
       if (!patient || !patient._id) {
-        // 缓存无效，删除缓存并从数据库获取最新数据
         await redisClient.del(`patient:${patientId}`);
       } else {
         return res.render("editPage", { patientObj: patient });
       }
     }
 
-    // 从MongoDB获取患者信息
+    // Get patient information from MongoDB
     const patient = await collection.findOne({ _id: patientId });
     if (patient) {
-      // 将患者信息缓存到Redis
-      await redisClient.set(`patient:${patientId}`, JSON.stringify(patient), { EX: 300 }); // 设置TTL为300秒
+      // Cache patient information in Redis
+      await redisClient.set(`patient:${patientId}`, JSON.stringify(patient), { EX: 300 }); // Set TTL to 300 seconds
       return res.render("editPage", { patientObj: patient });
     } else {
       return res.status(404).send("Patient not found");
@@ -226,45 +157,46 @@ router.get("/editPage", async (req, res) => {
   }
 });
 
-// 更新患者信息
+// Update Patient Information
 router.post("/updatePatient", async (req, res) => {
   try {
     const db = client.db(dbName);
     const collection = db.collection("patients");
     const updatedPatient = req.body;
 
-    // 确保patient_id有效
+    // Ensure patient_id is valid
     if (!updatedPatient.patient_id) {
       return res.status(400).send("Patient ID is required");
     }
 
-    // 更新MongoDB中的患者信息
+    // Update patient information in MongoDB
     await collection.updateOne(
       { _id: updatedPatient.patient_id },
       { $set: updatedPatient }
     );
 
-    // 更新Redis缓存中的患者信息
+    // Update patient information in Redis cache
     await redisClient.set(`patient:${updatedPatient.patient_id}`, JSON.stringify(updatedPatient), { EX: 300 });
 
-    // 删除Redis中的患者列表缓存，以便下次重新获取最新数据
+    // Delete patient list cache in Redis to refresh it next time
     await redisClient.del('patients::');
     res.redirect('/');
   } catch (err) {
-    console.error("更新患者信息出错：", err);
-    return res.status(500).send("数据库错误");
+    console.error("Error updating patient information:", err);
+    return res.status(500).send("Database error");
   }
 });
+
 // Edit Disease History Page
 router.get("/editDiseaseHistory", async (req, res) => {
   try {
     const db = client.db(dbName);
     const collection = db.collection("patients");
 
-    // history_id
+    // History ID
     const historyId = req.query.history_id;
 
-    // 尝试从Redis缓存中获取患者信息
+    // Try to get patient information from Redis cache
     const cachedPatient = await redisClient.get(`patient:${req.query.patient_id}`);
     if (cachedPatient) {
       const patient = JSON.parse(cachedPatient);
@@ -276,11 +208,11 @@ router.get("/editDiseaseHistory", async (req, res) => {
       }
     }
 
-    // 如果缓存不可用，从MongoDB获取数据
+    // If cache is not available, get data from MongoDB
     const patient = await collection.findOne({ "disease_history._id": historyId });
     if (patient) {
-      // 将患者信息缓存到Redis
-      await redisClient.set(`patient:${patient._id}`, JSON.stringify(patient), { EX: 300 }); // 设置TTL为300秒
+      // Cache patient information in Redis
+      await redisClient.set(`patient:${patient._id}`, JSON.stringify(patient), { EX: 300 }); // Set TTL to 300 seconds
       const history = patient.disease_history.find((h) => h._id === historyId);
       if (history) {
         return res.render("editHistory", { historyObj: history });
@@ -295,6 +227,7 @@ router.get("/editDiseaseHistory", async (req, res) => {
     res.status(500).send("Database error occurred");
   }
 });
+
 // Update Disease History
 router.post("/updateDiseaseHistory", async (req, res) => {
   try {
@@ -302,15 +235,15 @@ router.post("/updateDiseaseHistory", async (req, res) => {
     const collection = db.collection("patients");
     const { history_id, patient_id, diseases_name } = req.body;
 
-    // 更新MongoDB中的特定疾病历史记录
+    // Update specific disease history record in MongoDB
     await collection.updateOne(
       { _id: patient_id, "disease_history._id": history_id },
       { $set: { "disease_history.$.diseases_name": diseases_name } }
     );
 
-    // 删除所有相关的缓存
-    await redisClient.del(`diseaseHistory::`); // 删除患者列表缓存
-    res.redirect('/DiseaseHistory'); // 强制刷新页面
+    // Delete all related caches
+    await redisClient.del(`diseaseHistory::`); // Delete patient list cache
+    res.redirect('/DiseaseHistory'); // Force page refresh
   } catch (err) {
     console.error("Error updating disease history:", err);
     res.status(500).send("Database error occurred");
@@ -324,14 +257,14 @@ router.get("/delDiseaseHistory", async (req, res) => {
     const patientCollection = db.collection("patients");
     const historyId = req.query.id;
 
-    // 从MongoDB中删除疾病历史记录
+    // Delete disease history record from MongoDB
     await patientCollection.updateOne(
       { "disease_history._id": historyId },
       { $pull: { disease_history: { _id: historyId } } }
     );
 
-    // 删除所有相关的缓存
-    await redisClient.del(`diseaseHistory::`); // 删除患者列表缓存
+    // Delete all related caches
+    await redisClient.del(`diseaseHistory::`); // Delete patient list cache
 
     res.json({ delstatus: 1 });
   } catch (err) {
@@ -347,7 +280,7 @@ router.post("/addDiseaseHistory", async (req, res) => {
     const collection = db.collection("patients");
     const history = req.body;
 
-    // 确保disease_history是一个数组
+    // Ensure disease_history is an array
     const existingPatient = await collection.findOne({ _id: history.patient_id });
     if (existingPatient && !Array.isArray(existingPatient.disease_history)) {
       await collection.updateOne(
@@ -356,13 +289,13 @@ router.post("/addDiseaseHistory", async (req, res) => {
       );
     }
 
-    // 检查是否已经存在相同的历史记录ID
+    // Check if the same history ID already exists
     const historyExists = await collection.findOne({ "disease_history._id": history._id });
     if (historyExists) {
       return res.status(400).send("Error: History ID already exists");
     }
 
-    // 将历史记录插入到患者的disease_history数组中
+    // Insert history record into the patient's disease_history array
     const updateResult = await collection.updateOne(
       { _id: history.patient_id },
       {
@@ -380,15 +313,16 @@ router.post("/addDiseaseHistory", async (req, res) => {
       return res.status(404).send("Error: Patient ID not found");
     }
 
-    // 删除所有相关的缓存
-    await redisClient.del(`diseaseHistory::`); // 删除患者列表缓存
+    // Delete all related caches
+    await redisClient.del(`diseaseHistory::`); // Delete patient list cache
 
-    res.redirect('/DiseaseHistory'); // 强制刷新页面
+    res.redirect('/DiseaseHistory'); // Force page refresh
   } catch (err) {
     console.error("Error adding disease history:", err);
     res.status(500).send("Database error occurred");
   }
 });
+
 // Get Disease History
 router.get("/DiseaseHistory", async (req, res) => {
   try {
@@ -407,17 +341,17 @@ router.get("/DiseaseHistory", async (req, res) => {
     }
 
     const cacheKey = `diseaseHistory:${req.query.Id || ''}:${req.query.patientId || ''}`;
-    // 尝试从Redis缓存中获取疾病历史记录
+    // Try to get disease history from Redis cache
     const cachedHistory = await redisClient.get(cacheKey);
     if (cachedHistory) {
       console.log("Using cached disease history data");
       return res.render('diseasesHistory', { res: JSON.parse(cachedHistory) });
     }
 
-    // 从MongoDB获取患者数据
+    // Get patient data from MongoDB
     const patients = await patientCollection.find(historyQuery).toArray();
 
-    // 提取符合条件的疾病历史记录
+    // Extract matching disease history records
     patients.forEach(patient => {
       if (patient.disease_history && Array.isArray(patient.disease_history)) {
         patient.disease_history = patient.disease_history.filter(disease => 
@@ -427,7 +361,7 @@ router.get("/DiseaseHistory", async (req, res) => {
       }
     });
 
-    // 缓存疾病历史记录到Redis
+    // Cache disease history in Redis
     await redisClient.set(cacheKey, JSON.stringify(patients), { EX: 300 });
 
     res.render('diseasesHistory', { res: patients });
@@ -438,3 +372,4 @@ router.get("/DiseaseHistory", async (req, res) => {
 });
 
 module.exports = router;
+
