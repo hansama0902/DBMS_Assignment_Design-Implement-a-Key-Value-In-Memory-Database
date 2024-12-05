@@ -52,7 +52,6 @@ router.post("/add", async (req, res) => {
 
     // 删除患者列表缓存，确保前端下次获取的是最新数据
     await redisClient.del('patients::');
-
     res.redirect('/');
   } catch (err) {
     console.error("Error adding patient:", err);
@@ -121,6 +120,73 @@ router.get("/delete", async (req, res) => {
   }
 });
 
+// // Edit Patient Page
+// router.get("/editPage", async (req, res) => {
+//   try {
+//     const db = client.db(dbName);
+//     const collection = db.collection("patients");
+//     const patientId = req.query.patient_id;
+
+//     // 确保patientId有效
+//     if (!patientId) {
+//       return res.status(400).send("Patient ID is required");
+//     }
+
+//     // 检查Redis缓存
+//     const cachedPatient = await redisClient.get(`patient:${patientId}`);
+//     if (cachedPatient) {
+//       const patient = JSON.parse(cachedPatient);
+//       // if (!patient || !patient._id) {
+//         if (!patient || !patient._id) {
+//         return res.status(400).send("Invalid patient data in cache");
+//       }
+//       return res.render("editPage", { patientObj: patient });
+//     }
+
+//     // 从MongoDB获取患者信息
+//     const patient = await collection.findOne({ _id: patientId });
+//     if (patient) {
+//       // 将患者信息缓存到Redis
+//       await redisClient.set(`patient:${patientId}`, JSON.stringify(patient), { EX: 300 }); // 设置TTL为300秒
+//       return res.render("editPage", { patientObj: patient });
+//     } else {
+//       return res.status(404).send("Patient not found");
+//     }
+//   } catch (err) {
+//     console.error("Error retrieving patient for edit:", err);
+//     return res.status(500).send("Database error occurred");
+//   }
+// });
+
+// // 更新患者信息
+// router.post("/updatePatient", async (req, res) => {
+//   try {
+//     const db = client.db(dbName);
+//     const collection = db.collection("patients");
+//     const updatedPatient = req.body;
+
+//     // 确保patient_id有效
+//     if (!updatedPatient.patient_id) {
+//       return res.status(400).send("Patient ID is required");
+//     }
+
+//     // 更新MongoDB中的患者信息
+//     await collection.updateOne(
+//       { _id: updatedPatient.patient_id },
+//       { $set: updatedPatient }
+//     );
+
+//     // 更新Redis缓存中的患者信息
+//     await redisClient.set(`patient:${updatedPatient.patient_id}`, JSON.stringify(updatedPatient), { EX: 300 });
+
+//     // 删除Redis中的患者列表缓存，以便下次重新获取最新数据
+//     await redisClient.del('patients::');
+//     res.redirect('/');
+//   } catch (err) {
+//     console.error("更新患者信息出错：", err);
+//     return res.status(500).send("数据库错误");
+//   }
+// });  
 // Edit Patient Page
 router.get("/editPage", async (req, res) => {
   try {
@@ -138,9 +204,11 @@ router.get("/editPage", async (req, res) => {
     if (cachedPatient) {
       const patient = JSON.parse(cachedPatient);
       if (!patient || !patient._id) {
-        return res.status(400).send("Invalid patient data in cache");
+        // 缓存无效，删除缓存并从数据库获取最新数据
+        await redisClient.del(`patient:${patientId}`);
+      } else {
+        return res.render("editPage", { patientObj: patient });
       }
-      return res.render("editPage", { patientObj: patient });
     }
 
     // 从MongoDB获取患者信息
@@ -181,13 +249,12 @@ router.post("/updatePatient", async (req, res) => {
 
     // 删除Redis中的患者列表缓存，以便下次重新获取最新数据
     await redisClient.del('patients::');
-
     res.redirect('/');
   } catch (err) {
     console.error("更新患者信息出错：", err);
     return res.status(500).send("数据库错误");
   }
-});  
+});
 // Edit Disease History Page
 router.get("/editDiseaseHistory", async (req, res) => {
   try {
