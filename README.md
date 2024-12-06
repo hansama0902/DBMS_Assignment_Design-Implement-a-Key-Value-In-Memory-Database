@@ -4,21 +4,37 @@ This project is focused on leveraging **Redis** for various functionalities, div
 
 1. **Redis Data Structure Implementation**: Simulating an online user management system using Redis data structures. This includes documentation of the Redis commands used.
 2. **Node.js Implementation with Redis**: Developing a Node.js project, named `Redis_PatientManagementSystem`, which uses Redis as the primary data store for patient management. 
-3. **MongoDB Backup and Restore Guide**: Using MongoDB for backup and restore operations to integrate with a Node + Express + MongoDB application called `nodeExpressRedis_PatientManagementSystem`, which supports creating, displaying, modifying, and deleting data that represents at least one of the Redis data structures described in the previous part.
+3. **Node.js Implementation with Redis and MongoDB**: Integrating with a Node + Express + MongoDB application called `nodeExpressRedis_PatientManagementSystem`, which supports creating, displaying, modifying, and deleting data that represents at least one of the Redis data structures described in the previous part.
 
-## Project Structure
+## MongoDB Backup and Restore Guide
 
-- **`Loading the data`**: Download [the tweets generated during the 2020 ieeevis Conference](https://johnguerra.co/viz/influentials/ieeevis2020/ieeevis2020Tweets.dump.bz2) to an external site, and unzip the file. You can unzip this file using Keka or 7zip. After extraction, you should have a `.dump` file.
-- **`init.js`**: This script is responsible for importing the dataset into MongoDB. It uses the following `mongoimport` command to load data from a `.dump` file into the MongoDB collection `tweet`:
-  ```bash
-  mongoimport -h localhost:27017 -d ieeevisTweets -c tweet --file ./db/ieeevis2020Tweets.dump --drop
-  ```
-  This command connects to the MongoDB instance running on `localhost` at port `27017` and imports the dataset into the `ieeevisTweets` database, dropping the existing collection before importing.
+We can use the `mongodump` command to export a MongoDB database. For example, the following command exports the `patient_management` database to the `backup` directory on the desktop:
 
-- **`Query1.js` to `Query5.js`**: These files contain individual query scripts that perform various analyses on the data within the `ieeevisTweets` database.
+```bash
+mongodump --db patient_management --out ~/Desktop/backup/
+```
 
-- **`runAllQueries.js`**: This script is used to execute all queries sequentially, including `init.js` and `Query1.js` to `Query5.js`. It ensures that the data is imported first before running the queries, and each query is executed in order.
+- `--db patient_management`: Specifies the name of the database to export.
+- `--out ~/Desktop/backup/`: Specifies the path where the export files will be saved.
 
+After running this command, the `patient_management` database will be exported to the `~/Desktop/backup/patient_management` directory, generating files including `.bson` and `.metadata.json`.
+
+To restore a MongoDB database from the previously exported files, you can use the `mongorestore` command. For example, to restore the `patient_management` database from the backup directory on the desktop:
+
+```bash
+mongorestore --dir ~/Desktop/backup/patient_management
+```
+
+- `--dir ~/Desktop/backup/patient_management`: Specifies the directory path that contains the exported data.
+
+We can also use the `--nsInclude` parameter of `mongorestore` to specify which database and collections to restore. For example, if  BSON files are located in the `db` directory, you can run the following command:
+
+```bash
+mongorestore --nsInclude "patient_management.*" db
+```
+
+- `--nsInclude "patient_management.*"`: Specifies to restore all collections related to the `patient_management` database.
+- `db`: Specifies the directory that contains the `.bson` and `.metadata.json` files.  
 ## Prerequisites
 
 - **Node.js**
