@@ -182,23 +182,6 @@ To use Redis in Node.js, follow these steps:
 
    This script connects to Redis, sets a key-value pair, retrieves it, and then disconnects from Redis.
 
-## Project Workflow
-
-1. **Initialization (`init.js`)**: The dataset is imported from `ieeevis2020Tweets.dump` into MongoDB.
-    ```bash
-   node init.js
-   ```
-2. **Queries (`Query1.js` to `Query5.js`)**: These files contain various queries that analyze the imported data.  
-    You can run queries using the code:
-   ```bash
-   node Query1.js
-   ```
-3. **Execution (`runAllQueries.js`)**: This script runs all the queries sequentially, ensuring that data is properly imported before executing any query.
-    You can run to execute all queries using the code:
-   ```bash
-   node runAllQueries.js
-   ```
-
 ## Dependencies
 
 - **`mongodb`**: MongoDB Node.js driver for interacting with the MongoDB instance.
