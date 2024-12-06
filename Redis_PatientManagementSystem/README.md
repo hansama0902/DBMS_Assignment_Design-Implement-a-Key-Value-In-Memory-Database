@@ -63,4 +63,3 @@ Start the application by running the following command:
 node Query
 ```
 
-The server will start, and you can access the API endpoints using a tool like Postman or through your browser.
