@@ -24,6 +24,7 @@ node init
 ```
 
 5) start
-   ```
+   
+```
 node Query
 ```
