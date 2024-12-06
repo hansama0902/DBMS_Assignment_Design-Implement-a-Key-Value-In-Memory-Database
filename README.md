@@ -40,8 +40,6 @@ mongorestore --nsInclude "patient_management.*" db
 - **Node.js**
 - **MongoDB**
 - **Redis**
-- [**Download the tweets generated during the 2020 ieeevis Conference**](https://johnguerra.co/viz/influentials/ieeevis2020/ieeevis2020Tweets.dump.bz2)
-
 ## Setup Instructions
 
 1. Clone the repository to your local machine:
