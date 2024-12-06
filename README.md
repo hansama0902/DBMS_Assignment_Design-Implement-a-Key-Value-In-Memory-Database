@@ -1,4 +1,4 @@
-# Project III: Redis-focused Assignment
+# Project III: Redis-PatientManagementSystem
 
 This project is focused on leveraging **Redis** for various functionalities, divided into three main parts:
 
