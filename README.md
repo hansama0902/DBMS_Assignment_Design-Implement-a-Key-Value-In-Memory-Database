@@ -182,6 +182,9 @@ To use Redis in Node.js, follow these steps:
 
    This script connects to Redis, sets a key-value pair, retrieves it, and then disconnects from Redis.
 
+## Video
+https://youtu.be/ipkAq-ZcmAU  
+
 ## Dependencies
 
 - **`mongodb`**: MongoDB Node.js driver for interacting with the MongoDB instance.
