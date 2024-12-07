@@ -36,7 +36,6 @@ Navigate into the project directory and install the necessary dependencies:
 cd Redis_PatientManagementSystem
 npm install
 ```
-
 ### 3. Install Redis
 
 Install the Redis package to use Redis as a caching layer for the patient data:
