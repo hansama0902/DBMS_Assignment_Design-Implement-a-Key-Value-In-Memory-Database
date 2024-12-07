@@ -1,42 +1,34 @@
 const { createClient } = require('redis');
 const { MongoClient, ObjectId } = require('mongodb');
 
-// 创建 Redis 客户端
 const redisClient = createClient();
 
-// MongoDB 连接 URI
 const uri = "mongodb://localhost:27017";
 let mongoClient;
 
 async function initializeClients() {
   try {
-    // 连接 Redis
+
     await redisClient.connect();
     console.log("Connected to Redis");
-
-    // 清空 Redis 所有逻辑数据库
     await redisClient.flushAll();
     console.log("All Redis databases cleared");
 
-    // 选择 Redis 的逻辑数据库 0
     await redisClient.select(0);
     console.log("Using Redis database 0");
-    // 连接 MongoDB
     mongoClient = new MongoClient(uri);
     await mongoClient.connect();
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("Error during client initialization:", err);
-    process.exit(1); // 如果初始化失败，退出程序
+    process.exit(1); 
   }
 }
-// 缓存患者（作为用户）信息
 async function cachePatientInfo(patientId) {
   try {
     console.log(`Attempting to get patient info for ID: ${patientId} from Redis...`);
 
     const redisKey = `patient:${patientId}`;
-    // 从 Redis 检索数据
     const result = await redisClient.hGetAll(redisKey);
 
     if (Object.keys(result).length > 0) {
@@ -47,12 +39,11 @@ async function cachePatientInfo(patientId) {
       const db = mongoClient.db("patient_management");
       const collection = db.collection("patients");
 
-      // 检查 _id 的类型，确保与数据库中的数据一致
       let query;
       if (ObjectId.isValid(patientId) && patientId.length === 24) {
-        query = { _id: new ObjectId(patientId) }; // MongoDB 使用 ObjectId 类型
+        query = { _id: new patientId }; 
       } else {
-        query = { _id: patientId }; // 假设 _id 是字符串
+        query = { _id: patientId }; 
       }
 
       console.log("Querying MongoDB with:", query);
@@ -79,20 +70,17 @@ async function cachePatientInfo(patientId) {
     console.error("Error in cachePatientInfo:", err);
   }
 }
-
-// 设置患者在线状态
 async function setPatientOnlineStatus(patientId, isOnline) {
   try {
     const redisKey = `onlineStatus:${patientId}`;
     const status = isOnline ? "true" : "false";
-    await redisClient.set(redisKey, status, { EX: 60 * 60 }); // 在线状态有效期为 1 小时
+    await redisClient.set(redisKey, status, { EX: 60 * 60 }); 
     console.log(`Patient ${patientId} online status set to ${status}`);
   } catch (err) {
     console.error("Error in setPatientOnlineStatus:", err);
   }
 }
 
-// 检查患者在线状态
 async function checkPatientOnlineStatus(patientId) {
   try {
     const redisKey = `onlineStatus:${patientId}`;
@@ -105,7 +93,6 @@ async function checkPatientOnlineStatus(patientId) {
   }
 }
 
-// 缓存每个疾病历史为单独的 Redis 哈希表
 async function cacheDiseaseHistory(patientId) {
   try {
     console.log(`Attempting to get disease history for ID: ${patientId} from Redis...`);
@@ -113,12 +100,11 @@ async function cacheDiseaseHistory(patientId) {
     const db = mongoClient.db("patient_management");
     const collection = db.collection("patients");
 
-    // 检查 _id 的类型，确保与数据库中的数据一致
     let query;
     if (ObjectId.isValid(patientId) && patientId.length === 24) {
-      query = { _id: new patientId }; // MongoDB 使用 ObjectId 类型
+      query = { _id: new patientId }; 
     } else {
-      query = { _id: patientId }; // 假设 _id 是字符串
+      query = { _id: patientId }; 
     }
 
     console.log("Querying MongoDB with:", query);
@@ -128,7 +114,6 @@ async function cacheDiseaseHistory(patientId) {
     if (patient && patient.disease_history) {
       console.log("Disease history found in MongoDB:", patient.disease_history);
 
-      // 将每个疾病历史存储为独立的 Redis 哈希表
       for (let disease of patient.disease_history) {
         const redisKey = `diseaseHistory:${patientId}:${disease._id}`;
         const response = await redisClient.hSet(redisKey, {
@@ -150,7 +135,6 @@ async function cacheDiseaseHistory(patientId) {
   }
 }
 
-// 添加待办测试到患者队列
 async function addPendingTest(patientId, testName) {
   try {
     const redisKey = `pendingTests:${patientId}`;
@@ -161,7 +145,6 @@ async function addPendingTest(patientId, testName) {
   }
 }
 
-// 获取患者的所有待办测试
 async function getPendingTests(patientId) {
   try {
     const redisKey = `pendingTests:${patientId}`;
@@ -174,37 +157,22 @@ async function getPendingTests(patientId) {
   }
 }
 
-// 主程序入口
+
 async function main() {
   await initializeClients();
-  const patientId = "000002"; // 假设这是患者的 ID
+  const patientId = "000002"; 
 
-  // 缓存患者信息（作为用户信息）和疾病历史
   await cachePatientInfo(patientId);
-
-  // 设置患者在线状态为 "true"
   await setPatientOnlineStatus(patientId, true);
-
-  // 检查患者是否在线
   await checkPatientOnlineStatus(patientId);
-
-  // 缓存患者的疾病历史
   await cacheDiseaseHistory(patientId);
-
-  // 添加待办测试到患者队列
   await addPendingTest(patientId, "Blood Test");
   await addPendingTest(patientId, "X-Ray");
-
-  // 获取患者的所有待办测试
   await getPendingTests(patientId);
-
-  // 关闭客户端
   await mongoClient.close();
   await redisClient.disconnect();
   console.log("Clients disconnected, program ended.");
 }
-
-// 执行程序
 main().catch((err) => {
   console.error("Error during execution:", err);
   process.exit(1);
