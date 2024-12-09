@@ -1,5 +1,5 @@
-const { createClient } = require('redis');
-const { MongoClient, ObjectId } = require('mongodb');
+import { createClient } from 'redis';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const redisClient = createClient();
 
@@ -8,7 +8,6 @@ let mongoClient;
 
 async function initializeClients() {
   try {
-
     await redisClient.connect();
     console.log("Connected to Redis");
     await redisClient.flushAll();
@@ -16,14 +15,16 @@ async function initializeClients() {
 
     await redisClient.select(0);
     console.log("Using Redis database 0");
+
     mongoClient = new MongoClient(uri);
     await mongoClient.connect();
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("Error during client initialization:", err);
-    process.exit(1); 
+    process.exit(1);
   }
 }
+
 async function cachePatientInfo(patientId) {
   try {
     console.log(`Attempting to get patient info for ID: ${patientId} from Redis...`);
@@ -39,20 +40,16 @@ async function cachePatientInfo(patientId) {
       const db = mongoClient.db("patient_management");
       const collection = db.collection("patients");
 
-      let query;
-      if (ObjectId.isValid(patientId) && patientId.length === 24) {
-        query = { _id: new patientId }; 
-      } else {
-        query = { _id: patientId }; 
-      }
+      const query = ObjectId.isValid(patientId) && patientId.length === 24
+        ? { _id: new ObjectId(patientId) }
+        : { _id: patientId };
 
       console.log("Querying MongoDB with:", query);
       const patient = await collection.findOne(query);
-      console.log("Query result from MongoDB:", patient);
 
       if (patient) {
         console.log("Patient found in MongoDB:", patient);
-        const response = await redisClient.hSet(redisKey, {
+        await redisClient.hSet(redisKey, {
           first_name: patient.first_name || "",
           last_name: patient.last_name || "",
           phone: patient.phone || "",
@@ -60,7 +57,6 @@ async function cachePatientInfo(patientId) {
           address: patient.address || "",
           gender: patient.gender || "",
         });
-        console.log("Redis HSET response:", response);
         console.log("Cached in Redis:", patient);
       } else {
         console.log("Patient not found in MongoDB.");
@@ -70,11 +66,12 @@ async function cachePatientInfo(patientId) {
     console.error("Error in cachePatientInfo:", err);
   }
 }
+
 async function setPatientOnlineStatus(patientId, isOnline) {
   try {
     const redisKey = `onlineStatus:${patientId}`;
     const status = isOnline ? "true" : "false";
-    await redisClient.set(redisKey, status, { EX: 60 * 60 }); 
+    await redisClient.set(redisKey, status, { EX: 60 * 60 });
     console.log(`Patient ${patientId} online status set to ${status}`);
   } catch (err) {
     console.error("Error in setPatientOnlineStatus:", err);
@@ -100,33 +97,23 @@ async function cacheDiseaseHistory(patientId) {
     const db = mongoClient.db("patient_management");
     const collection = db.collection("patients");
 
-    let query;
-    if (ObjectId.isValid(patientId) && patientId.length === 24) {
-      query = { _id: new patientId }; 
-    } else {
-      query = { _id: patientId }; 
-    }
+    const query = ObjectId.isValid(patientId) && patientId.length === 24
+      ? { _id: new ObjectId(patientId) }
+      : { _id: patientId };
 
-    console.log("Querying MongoDB with:", query);
     const patient = await collection.findOne(query);
-    console.log("Query result from MongoDB:", patient);
 
-    if (patient && patient.disease_history) {
+    if (patient?.disease_history) {
       console.log("Disease history found in MongoDB:", patient.disease_history);
 
-      for (let disease of patient.disease_history) {
+      for (const disease of patient.disease_history) {
         const redisKey = `diseaseHistory:${patientId}:${disease._id}`;
-        const response = await redisClient.hSet(redisKey, {
+        await redisClient.hSet(redisKey, {
           diseases_name: disease.diseases_name,
           patient_id: patientId,
         });
-        console.log(`Cached disease history with ID ${disease._id} in Redis:`, {
-          diseases_name: disease.diseases_name,
-          patient_id: patientId,
-        });
-        console.log("Redis HSET response for disease:", response);
+        console.log(`Cached disease history with ID ${disease._id} in Redis.`);
       }
-
     } else {
       console.log("Disease history not found in MongoDB.");
     }
@@ -157,10 +144,9 @@ async function getPendingTests(patientId) {
   }
 }
 
-
 async function main() {
   await initializeClients();
-  const patientId = "000002"; 
+  const patientId = "000002";
 
   await cachePatientInfo(patientId);
   await setPatientOnlineStatus(patientId, true);
@@ -173,6 +159,7 @@ async function main() {
   await redisClient.disconnect();
   console.log("Clients disconnected, program ended.");
 }
+
 main().catch((err) => {
   console.error("Error during execution:", err);
   process.exit(1);
