@@ -41,7 +41,7 @@ async function cachePatientInfo(patientId) {
       const collection = db.collection("patients");
 
       const query = ObjectId.isValid(patientId) && patientId.length === 24
-        ? { _id: new ObjectId(patientId) }
+        ? { _id: new patientId }
         : { _id: patientId };
 
       console.log("Querying MongoDB with:", query);
@@ -98,7 +98,7 @@ async function cacheDiseaseHistory(patientId) {
     const collection = db.collection("patients");
 
     const query = ObjectId.isValid(patientId) && patientId.length === 24
-      ? { _id: new ObjectId(patientId) }
+      ? { _id: new patientId }
       : { _id: patientId };
 
     const patient = await collection.findOne(query);
