@@ -4,20 +4,20 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import indexRouter from './routes/index.js'; // 确保路径正确
-import usersRouter from './routes/users.js'; // 确保路径正确
+import indexRouter from './routes/index.js';  
+import usersRouter from './routes/users.js';  
 
 const app = express();
 
 // view engine setup
-app.set('views', path.join(process.cwd(), 'views')); // 使用 process.cwd() 获取当前工作目录
+app.set('views', path.join(process.cwd(), 'views'));  
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(process.cwd(), 'public'))); // 使用 process.cwd()
+app.use(express.static(path.join(process.cwd(), 'public')));  
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
