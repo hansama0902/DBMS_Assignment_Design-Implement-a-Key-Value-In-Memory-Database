@@ -1,15 +1,21 @@
-const express = require("express");
+import express from "express";
+import { MongoClient } from "mongodb";
+import redis from "redis";
+
 const router = express.Router();
-const { MongoClient } = require("mongodb");
-const redis = require("redis");
 
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const dbName = "patient_management";
 
 // Create Redis client
-const redisClient = redis.createClient();
-redisClient.connect();
+let redisClient;
+const initializeRedisClient = async () => {
+  redisClient = redis.createClient();
+  redisClient.on("error", (err) => console.error("Redis Client Error:", err));
+  await redisClient.connect();
+};
+initializeRedisClient().catch(console.error);
 
 // Add Patient
 router.post("/add", async (req, res) => {
@@ -371,5 +377,5 @@ router.get("/DiseaseHistory", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
 
